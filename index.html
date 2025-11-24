@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ELBEX Courier Service</title>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+<style>
+  /* ====== Variables & Reset ====== */
+  :root{
+    --primary: #2863aa;
+    --accent: #FFC043;
+    --muted: #eef4fa;
+    --dark: #0f1720;
+    --card-shadow: 0 10px 30px rgba(16,24,40,0.12);
+    --glass: rgba(66, 24, 150, 0.06);
+    --max-width: 1200px;
+    --ease: cubic-bezier(.2,.9,.2,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;font-family:"Segoe UI",Roboto,Arial,sans-serif;color:#111;background:#f4f6f8}
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
+
+  /* TOP BAR */
+  .top-bar{
+    background:#1f1cb3;color:#fff;padding:8px 5%;display:flex;justify-content:space-between;align-items:center;font-size:14px;
+  }
+  .top-bar .left span{margin-right:12px;opacity:0.95}
+  .top-bar .right .small-btn{padding:6px 14px;margin-left:10px;background:var(--accent);border:none;border-radius:6px;cursor:pointer;font-weight:700}
+  .top-bar .right .yellow-btn{background:#fff;color:#111;border:1px solid var(--accent)}
+
+  /* HEADER */
+  header{display:flex;align-items:center;justify-content:space-between;padding:14px 5%;background:#fff;position:sticky;top:0;z-index:1100;box-shadow:0 2px 8px rgba(16,24,40,0.05)}
+  .logo-container{display:flex;align-items:center;gap:12px}
+  .logo-icon{width:58px;height:auto}
+  .logo-text{font-weight:700;line-height:1;color:#111}
+  .logo-text .logo-tagline{font-weight:400;font-size:12px;color:#666}
+
+  nav.main-nav{display:flex;gap:8px;align-items:center}
+  nav.main-nav ul{list-style:none;display:flex;gap:6px;align-items:center}
+  nav.main-nav a{display:block;padding:16px 8px;font-weight:700;color:#222;border-radius:6px;transition:color 200ms var(--ease)}
+  nav.main-nav a:hover, nav.main-nav a.active{color:var(--primary)}
+
+  .header-tools{display:flex;gap:8px;align-items:center}
+  .icon-btn{border:none;background:var(--accent);color:#111;padding:10px 12px;border-radius:8px;cursor:pointer;font-size:16px;transition:transform 160ms var(--ease)}
+  .icon-btn:active{transform:translateY(2px)}
+
+  /* MOBILE NAV */
+  .mobile-toggle{display:none}
+  .mobile-nav{display:none}
+
+  /* HERO SLIDER */
+  .hero-slider{position:relative;overflow:hidden;height:520px;background:#ddd}
+  .slider-container{position:relative;height:100%;max-width:var(--max-width);margin:0 auto}
+  .slide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 900ms var(--ease), transform 900ms var(--ease);transform:scale(1.02)}
+  .slide.active{opacity:1;transform:scale(1)}
+  .hero-tag{position:absolute;top:16%;left:6%;background:rgba(10,10,10,0.82);color:#fff;padding:10px 14px;border-radius:8px;font-size:14px;z-index:4}
+  .hero-copy{position:absolute;top:16%;left:6%;max-width:540px;color:#111;z-index:4}
+  .hero-copy h1{font-size:42px;line-height:1.05;margin:18px 0;color:#071020}
+  .hero-copy p{color:#122;opacity:0.95;margin-bottom:18px}
+  .franchise-btn{background:var(--primary);color:#fff;border:none;padding:12px 18px;border-radius:8px;cursor:pointer;font-weight:800;box-shadow:0 8px 22px rgba(163,41,44,0.18);transition:transform 160ms var(--ease)}
+  .franchise-btn:hover{transform:translateY(-3px)}
+
+  .slider-controls{position:absolute;top:50%;left:0;right:0;display:flex;justify-content:space-between;transform:translateY(-50%);padding:0 20px;z-index:5}
+  .slider-controls button{background:rgba(0,0,0,0.45);border:none;color:#fff;font-size:26px;padding:10px 14px;border-radius:10px;cursor:pointer;transition:transform 140ms var(--ease)}
+  .slider-controls button:active{transform:translateY(2px)}
+
+  /* SECOND HERO (VIDEO + TEXT) */
+  .hero-section{position:relative;background:var(--primary);color:#fff;padding:48px 5%;overflow:visible}
+  .hero-content-wrapper{max-width:var(--max-width);margin:0 auto;display:flex;gap:28px;align-items:stretch;flex-wrap:wrap}
+  .hero-media-column,.hero-text-column{flex:1 1 460px;min-width:280px}
+  .video-placeholder{position:relative;padding-bottom:56.25%;height:0;border-radius:10px;overflow:hidden;box-shadow:var(--card-shadow);background:#000}
+  .video-placeholder .main-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(0.78);transition:transform 400ms var(--ease)}
+  .video-overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:12px;cursor:pointer}
+  .play-button{width:72px;height:72px;border-radius:50%;background:var(--accent);border:5px solid #fff;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(0,0,0,0.25)}
+  .play-button::after{content:"";display:inline-block;margin-left:5px;width:0;height:0;border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent var(--primary)}
+
+  .hero-text-column .quote{font-size:30px;font-weight:800;margin-bottom:12px}
+  .hero-text-column .description{opacity:0.95;margin-bottom:16px}
+  .vision-mission-container{display:flex;gap:18px;flex-wrap:wrap}
+  .info-card{background:#fff;color:#0b1220;border-radius:8px;padding:18px;border-top:6px solid var(--accent);flex:1 1 220px;min-width:200px;box-shadow:var(--card-shadow)}
+  .info-card h2{color:var(--primary);margin-bottom:8px}
+
+  /* FRANCHISE CARDS */
+  .franchise-section{padding:48px 5%;background:var(--muted)}
+  .franchise-section .container{max-width:var(--max-width);margin:0 auto}
+  .franchise-section h2{font-size:34px;color:#0b1220;margin-bottom:6px}
+  .franchise-section p.subtitle{color:#444;margin-bottom:22px}
+  .cards-container{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+  .fcard{background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--card-shadow);transition:transform 300ms var(--ease),box-shadow 300ms var(--ease)}
+  .fcard:hover{transform:translateY(-8px);box-shadow:0 18px 40px rgba(16,24,40,0.14)}
+  .fcard img{width:100%;height:220px;object-fit:cover}
+  .fcard h3{color:var(--primary);font-size:18px;padding:14px 16px 6px}
+  .fcard p{padding:0 16px 18px;color:#555;font-size:14px}
+
+  /* RUNNING NUMBERS (Style 2: horizontal bar with icons) */
+  .stats-bar{display:flex;justify-content:space-between;gap:12px;padding:18px 5%;background:#fff;border-top:1px solid #efefef;border-bottom:1px solid #efefef;align-items:center}
+  .stat-item{flex:1 1 0;display:flex;gap:12px;align-items:center;padding:12px;background:linear-gradient(180deg, rgba(255,255,255,0.98), #fff);border-radius:10px;box-shadow:0 6px 20px rgba(16,24,40,0.04);transition:transform 220ms var(--ease)}
+  .stat-item:hover{transform:translateY(-6px)}
+  .stat-icon{width:56px;height:56px;border-radius:10px;background:linear-gradient(180deg,var(--accent),#ffb84d);display:flex;align-items:center;justify-content:center;color:#111;font-size:22px;font-weight:800;box-shadow:0 8px 20px rgba(163,41,44,0.08)}
+  .stat-text{display:flex;flex-direction:column}
+  .stat-number{font-size:22px;font-weight:800;color:var(--primary)}
+  .stat-label{font-size:13px;color:#445;opacity:0.8}
+
+  /* FOOTER (Modern Dark Corporate) */
+  footer.site-footer{background:linear-gradient(180deg,#071022,#06121a);color:#cfd8e3;padding:48px 5% 24px}
+  .footer-inner{max-width:var(--max-width);margin:0 auto;display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start}
+  .footer-col{flex:1 1 220px;min-width:180px}
+  .footer-logo{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+  .footer-logo img{width:58px;height:auto}
+  .footer-title{font-weight:800;color:#fff}
+  .footer-text{color:#b7c2cd;font-size:14px;margin-top:8px;line-height:1.6}
+
+  .footer-links{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+  .footer-links a{color:#cbd7e6;opacity:0.95;font-size:14px}
+  .socials{display:flex;gap:8px;margin-top:12px}
+  .socials a{background:rgba(255,255,255,0.06);padding:8px;border-radius:8px;color:#fff;display:inline-flex;align-items:center;justify-content:center}
+
+  .footer-bottom{border-top:1px solid rgba(255,255,255,0.04);margin-top:20px;padding-top:18px;color:#96a3b3;font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+  .footer-contact{display:flex;flex-direction:column;gap:6px}
+
+  /* SECTION ANIMATIONS (initial hidden) */
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity 700ms var(--ease),transform 700ms var(--ease)}
+  .reveal.show{opacity:1;transform:none}
+
+  /* small screens */
+  @media (max-width:1100px){
+    .cards-container{grid-template-columns:repeat(2,1fr)}
+    .hero-copy h1{font-size:32px}
+    .hero-slider{height:480px}
+    .stats-bar{flex-direction:column;align-items:stretch}
+    .stat-item{width:100%}
+    footer.site-footer{padding:36px 5% 20px}
+    .footer-bottom{flex-direction:column;align-items:flex-start}
+  }
+  @media (max-width:760px){
+    nav.main-nav{display:none}
+    .mobile-toggle{display:block}
+    .hero-slider{height:360px}
+    .hero-copy h1{font-size:24px}
+    .hero-content-wrapper{flex-direction:column}
+    .cards-container{grid-template-columns:repeat(1,1fr)}
+    .stat-item{padding:10px}
+  }
+
+  /* Mobile nav panel */
+  .mobile-panel{
+    position:fixed;inset:0;background:linear-gradient(180deg,rgba(7,18,34,0.96),rgba(7,18,34,0.98));z-index:1200;display:none;flex-direction:column;padding:20px;gap:18px;
+    transform:translateY(-6%);opacity:0;transition:opacity 300ms var(--ease),transform 300ms var(--ease)
+  }
+  .mobile-panel.show{display:flex;opacity:1;transform:none}
+  .mobile-panel a{color:#fff;font-size:18px;padding:10px 6px;border-radius:8px}
+</style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="left">
+      <span><a href="" aria-label="youtube"><i class="fab fa-youtube"></i></a></span>
+      <span><a href="" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a></span>
+      <span><a href="https://www.instagram.com/ardbrothers.courier?utm_source=qr&igsh=M3QwM3ZtNjZzMHI4" aria-label="Instagram"><i class="fab fa-instagram"></i></a></span>
+      <span><a href="https://www.facebook.com/profile.php?id=61584343401836&sk=about" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a></span>
+    </div>
+    <div class="right">
+      <button class="small-btn">Door-step Pickup</button>
+      <button class="small-btn yellow-btn">Franchise Query</button>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo-container">
+      <img src="logo.png" alt="ELBEX Logo" class="logo-icon">
+      <div class="logo-text">
+        ELBEX<br><span style="font-size:14px; font-weight:800">COURIER SERVICE</span>
+        <span class="logo-tagline">Domestic | International | Cargo</span>
+      </div>
+    </div>
+
+    <nav class="main-nav" aria-label="Primary navigation">
+      <ul>
+        <li><a class="active" href="index.html">Home</a></li>
+        <li><a href="index.html">Express Services <i class="fas fa-caret-down" style="font-size:12px;margin-left:6px"></i></a></li>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="#franchise">Franchise Plans</a></li>
+        <li><a href="contact.html">Contact Us</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-tools">
+      <button class="icon-btn search-btn" aria-label="Search"><i class="fas fa-search"></i></button>
+      <button class="icon-btn menu-btn mobile-toggle" id="mobileToggle" aria-label="Open menu"><i class="fas fa-bars"></i></button>
+    </div>
+  </header>
+
+  <!-- MOBILE NAV PANEL -->
+  <div class="mobile-panel" id="mobilePanel" aria-hidden="true">
+    <a href="index.html">Home</a>
+    <a href="index.html">Express Services</a>
+    <a href="about.html">About Us</a>
+    <a href="#franchise">Franchise Plans</a>
+    <a href="contact.html">Contact Us</a>
+    <div style="margin-top:auto;display:flex;gap:8px">
+      <a href="#" style="background:#25D366;padding:10px;border-radius:8px;color:#071022">WhatsApp</a>
+      <a href="#" style="background:var(--accent);padding:10px;border-radius:8px;color:#071022">Franchise Query</a>
+    </div>
+  </div>
+
+  <!-- HERO SLIDER -->
+  <section class="hero-slider" aria-label="Main hero slider">
+    <div class="slider-container">
+      <div class="slide active" style="background-image:url('https://media.istockphoto.com/id/1249219777/photo/shopping-online-concept-parcel-or-paper-cartons-with-a-shopping-cart-logo-in-a-trolley-on-a.jpg?s=612x612&w=0&k=20&c=EWKEahyVLY8iAHyirCCDESHRGW37lqUJ7In0SssNSLE=');"></div>
+      <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1758523670564-d1d6a734dc0b?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fG9ubGluZSUyMGRlbGl2ZXJ5fGVufDB8fDB8fHww');"></div>
+      <div class="slide" style="background-image:url('https://media.istockphoto.com/id/2227981382/photo/mini-shopping-cart-with-cardboard-boxes-on-hand-through-smartphone-on-blue-background.jpg?s=612x612&w=0&k=20&c=pN0cxG0mBphcTvQqe9u4Zh6tMFXYavpeFXaf5ZM0nmg=');"></div>
+
+      <div class="hero-copy reveal">
+        <h1>Build your business in<br>Courier & Logistics<br>industry with <span style="color:var(--primary)">ELBEX</span></h1>
+        <p>ELBEX offers innovative and profitable business opportunities backed with superior technology and growth potential surpassing industry benchmarks.</p>
+        <button class="franchise-btn" id="toFranchise">Franchise Plans</button>
+      </div>
+
+      <div class="slider-controls">
+        <button class="prev" aria-label="Previous slide">❮</button>
+        <button class="next" aria-label="Next slide">❯</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECOND HERO (VIDEO + VISION/MISSION) -->
+  <main class="hero-section">
+    <div class="hero-content-wrapper">
+      <div class="hero-media-column reveal">
+        <div class="video-placeholder" id="videoPlaceholder" tabindex="0" role="button" aria-pressed="false" aria-label="Play video">
+          <img class="main-image" src="img1.png" alt="ELBEX showcase">
+          <div class="video-overlay">
+            <div class="play-button" aria-hidden="true"></div>
+            <span>Watch 2 minutes</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-text-column reveal">
+        <h2 class="quote">"As sure as delivered by yourself"</h2>
+        <p class="description">ELBEX Couriers Private Limited (ECPL) is an emerging business entity amongst India's fast growing courier, cargo & logistics service providers. Elbex courier offers its customers comprehensive distribution & delivery options with a strong national footprint.</p>
+
+        <div class="vision-mission-container">
+          <div class="info-card">
+            <h2>Our Vision</h2>
+            <p>Achieving leadership in the Indian courier industry by providing integrated logistics solutions to customers' distribution needs through domain expertise — remaining dependable, responsive and cohesive.</p>
+          </div>
+
+          <div class="info-card">
+            <h2>Our Mission</h2>
+            <p>To provide clients the most advanced, high-quality delivery solutions available in the courier industry, delivering excellent operations value and customer-focused service.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="position:relative;max-width:var(--max-width);margin:20px auto 0;padding:0 5%;">
+      <!-- STATS BAR (HORIZONTAL with icons + counters) -->
+      <div class="stats-bar reveal" id="statsBar" aria-hidden="false">
+        <div class="stat-item" data-target="204000" aria-labelledby="stat1">
+          <div class="stat-icon"><i class="fas fa-box"></i></div>
+          <div class="stat-text"><div id="stat1" class="stat-number">0</div><div class="stat-label">Shipped with us</div></div>
+        </div>
+
+        <div class="stat-item" data-target="7800" aria-labelledby="stat2">
+          <div class="stat-icon"><i class="fas fa-smile"></i></div>
+          <div class="stat-text"><div id="stat2" class="stat-number">0</div><div class="stat-label">Happy clients</div></div>
+        </div>
+
+        <div class="stat-item" data-target="160" aria-labelledby="stat3">
+          <div class="stat-icon"><i class="fas fa-store"></i></div>
+          <div class="stat-text"><div id="stat3" class="stat-number">0</div><div class="stat-label">Franchises</div></div>
+        </div>
+
+        <div class="stat-item" data-target="12" aria-labelledby="stat4">
+          <div class="stat-icon"><i class="fas fa-award"></i></div>
+          <div class="stat-text"><div id="stat4" class="stat-number">0</div><div class="stat-label">Years of Service</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WhatsApp floating and scroll-top -->
+    <div class="float-whatsapp" style="position:fixed;right:20px;bottom:120px;z-index:1200">
+      <div class="whatsapp-box" onclick="openWhatsApp()" aria-label="Contact on WhatsApp" role="link" style="cursor:pointer">
+        <img src="data:image/png;base64,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" alt="WhatsApp" style="width:26px;height:26px;border-radius:4px">
+        <span style="font-weight:700;color:#fff;margin-left:6px">We are Online!</span>
+      </div>
+    </div>
+
+    <button class="scroll-top-btn" id="scrollTopBtn" title="Back to top" style="position:fixed;right:20px;bottom:20px;display:none;z-index:1200;background:var(--accent);border:none;border-radius:50%;width:46px;height:46px;">
+      <i class="fas fa-chevron-up" style="color:var(--dark)"></i>
+    </button>
+  </main>
+
+  <!-- FRANCHISE SECTION -->
+  <section id="franchise" class="franchise-section reveal" aria-label="Franchise Plans">
+    <div class="container">
+      <h2>Franchise Plans</h2>
+      <p class="subtitle">Express growth with ELBEX</p>
+
+      <div class="cards-container">
+        <div class="fcard reveal">
+          <img src="https://elbex.in/img/thb/religion_franchise.png" alt="Franchise Plans">
+          <h3>Franchise Plans</h3>
+          <p>ELBEX franchisees operate within a specific geographical area as a composite business unit.</p>
+        </div>
+
+        <div class="fcard reveal">
+          <img src="https://elbex.in/img/thb/master_franchise.png" alt="Master Franchise">
+          <h3>Master Franchise</h3>
+          <p>Grants rights to operate and expand franchise clusters across large districts or regions.</p>
+        </div>
+
+        <div class="fcard reveal">
+          <img src="https://elbex.in/img/thb/super_franchise.png" alt="Super Franchise">
+          <h3>Super Franchise</h3>
+          <p>Acts as an extended branch supporting operations, development, and client servicing.</p>
+        </div>
+
+        <div class="fcard reveal">
+          <img src="https://elbex.in/img/thb/unit_franchise.png" alt="Unit Franchise">
+          <h3>Unit Franchise</h3>
+          <p>Operates under Super Franchise, receiving exclusive rights within assigned pin-code areas.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-inner">
+      <div class="footer-col">
+        <div class="footer-logo">
+          <img src="logo.png" alt="ELBEX">
+          <div>
+            <div class="footer-title">ELBEX Couriers Pvt Ltd</div>
+            <div class="footer-text">No.258, Avarampalayam Road, New Siddapudur, Coimbatore - 641 044, Tamil Nadu, India</div>
+          </div>
+        </div>
+        <div class="footer-text" style="margin-top:12px">For queries kindly call <strong>+91 95853 31009</strong> or email <a href="mailto:info@elbex.in" style="color:#dfe9f4">info@elbex.in</a></div>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-title">Company</div>
+        <div class="footer-links">
+          <a href="#">Overview</a>
+          <a href="#">Company Profile</a>
+          <a href="#">Vision & Mission</a>
+          <a href="#">Blogs</a>
+          <a href="#">Careers</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-title">Franchise</div>
+        <div class="footer-links">
+          <a href="#">Franchise Plans</a>
+          <a href="#">Plans Overview</a>
+          <a href="#">Master Franchise</a>
+          <a href="#">Super Franchise</a>
+          <a href="#">Unit Franchise</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-title">Help Desk</div>
+        <div class="footer-links">
+          <a href="#">Customer Support</a>
+          <a href="#">Track Now</a>
+          <a href="#">Door-step Pickup</a>
+          <a href="#">Rate Calculator</a>
+          <a href="#">Serviceable Locations</a>
+        </div>
+
+        <div class="socials" style="margin-top:14px">
+          <a href="https://www.facebook.com/profile.php?id=61584343401836&sk=about" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+          <a href="https://www.instagram.com/ardbrothers.courier?utm_source=qr&igsh=M3QwM3ZtNjZzMHI4" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div>© <span id="year"></span> ELBEX Couriers. All rights reserved.</div>
+      <div class="footer-contact">Phone: +91 95853 31009 &nbsp;|&nbsp; Email: info@elbex.in</div>
+    </div>
+  </footer>
+
+<script>
+  /* ====== Slider ====== */
+  (function(){
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const nextBtn = document.querySelector('.next');
+    const prevBtn = document.querySelector('.prev');
+    let index = 0;
+    let interval = null;
+    const AUTO_MS = 5000;
+
+    function show(i){
+      slides.forEach(s => s.classList.remove('active'));
+      slides[i].classList.add('active');
+    }
+    function next(){ index = (index + 1) % slides.length; show(index); }
+    function prev(){ index = (index - 1 + slides.length) % slides.length; show(index); }
+
+    nextBtn.addEventListener('click', () => { next(); resetAuto(); });
+    prevBtn.addEventListener('click', () => { prev(); resetAuto(); });
+
+    function startAuto(){ interval = setInterval(next, AUTO_MS); }
+    function stopAuto(){ if(interval) clearInterval(interval); interval = null; }
+    function resetAuto(){ stopAuto(); startAuto(); }
+
+    const slider = document.querySelector('.hero-slider');
+    slider.addEventListener('mouseenter', stopAuto);
+    slider.addEventListener('mouseleave', startAuto);
+
+    show(index); startAuto();
+
+    // keyboard arrows
+    window.addEventListener('keydown', (e) => {
+      if(e.key === 'ArrowLeft') prev();
+      if(e.key === 'ArrowRight') next();
+    });
+  })();
+
+  /* ====== Mobile nav toggle ====== */
+  (function(){
+    const mobileToggle = document.getElementById('mobileToggle');
+    const mobilePanel = document.getElementById('mobilePanel');
+    mobileToggle.addEventListener('click', () => {
+      const shown = mobilePanel.classList.toggle('show');
+      mobilePanel.setAttribute('aria-hidden', (!shown).toString());
+    });
+    // hide panel on outside click
+    document.addEventListener('click', (e) => {
+      if(!mobilePanel.contains(e.target) && !mobileToggle.contains(e.target)){
+        mobilePanel.classList.remove('show');
+        mobilePanel.setAttribute('aria-hidden', 'true');
+      }
+    });
+  })();
+
+  /* ====== Scroll top button ====== */
+  (function(){
+    const btn = document.getElementById('scrollTopBtn');
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY || document.documentElement.scrollTop;
+      if(scrolled > 300) btn.style.display = 'flex'; else btn.style.display = 'none';
+    });
+    btn.addEventListener('click', () => window.scrollTo({top:0,behavior:'smooth'}));
+  })();
+
+  /* ====== Video placeholder simulation ====== */
+  (function(){
+    const placeholder = document.getElementById('videoPlaceholder');
+    placeholder.addEventListener('click', () => {
+      alert('Video playback would start here! Replace placeholder with an iframe for a real video.');
+    });
+    placeholder.addEventListener('keypress', (e) => {
+      if(e.key === 'Enter' || e.key === ' ') placeholder.click();
+    });
+  })();
+
+  /* ====== Stats counters (animated) ====== */
+  (function(){
+    const statItems = Array.from(document.querySelectorAll('.stat-item'));
+    let started = false;
+
+    function animateCounter(el, start, end, duration){
+      let startTime = null;
+      const step = (timestamp) => {
+        if(!startTime) startTime = timestamp;
+        const progress = Math.min((timestamp - startTime) / duration, 1);
+        const value = Math.floor(progress * (end - start) + start);
+        el.textContent = (end >= 1000) ? formatNumber(Math.floor(value)) : value;
+        if(progress < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }
+    function formatNumber(n){
+      // format like 204K or 1,234
+      if(n >= 1000 && n < 1000000){
+        return Math.round(n / 1000) + 'K';
+      }
+      if(n >= 1000000) return (n/1000000).toFixed(1) + 'M';
+      return n.toLocaleString();
+    }
+
+    const options = { threshold: 0.25 };
+    const obs = new IntersectionObserver((entries, o) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting && !started){
+          started = true;
+          statItems.forEach(item => {
+            const target = parseInt(item.getAttribute('data-target'),10) || 0;
+            const numEl = item.querySelector('.stat-number');
+            if(numEl){
+              // animate from 0 to target (duration depends on size)
+              const duration = target > 10000 ? 1800 : 1200;
+              animateCounter(numEl, 0, target, duration);
+            }
+          });
+          o.disconnect();
+        }
+      });
+    }, options);
+
+    if(statItems.length) obs.observe(document.getElementById('statsBar'));
+  })();
+
+  /* ====== Intersection Observer for reveal animations ====== */
+  (function(){
+    const reveals = Array.from(document.querySelectorAll('.reveal'));
+    const opts = { threshold: 0.12 };
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          entry.target.classList.add('show');
+        }
+      });
+    }, opts);
+    reveals.forEach(r => io.observe(r));
+  })();
+
+  /* ====== Smooth scroll to franchise ====== */
+  document.getElementById('toFranchise').addEventListener('click', () => {
+    document.getElementById('franchise').scrollIntoView({behavior:'smooth'});
+  });
+
+  /* ====== WhatsApp open ====== */
+  function openWhatsApp(){
+    const phone = '919585331009';
+    const text = encodeURIComponent('Hello ELBEX! I want to know about franchise plans.');
+    const url = `https://wa.me/${phone}?text=${text}`;
+    window.open(url,'_blank');
+  }
+
+  /* ====== Footer year ====== */
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  /* ====== Small accessibility: allow Enter to toggle mobile panel via keyboard ====== */
+  (function(){
+    const mobileToggle = document.getElementById('mobileToggle');
+    mobileToggle.addEventListener('keypress', (e) => {
+      if(e.key === 'Enter' || e.key === ' ') mobileToggle.click();
+    });
+  })();
+</script>
+
+</body>
+</html>
